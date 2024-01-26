@@ -15,9 +15,22 @@ const io= new Server(httpServer,{
 })
 
 io.on('connection',(socket)=>{
-    console.log("connected");
+    let userName=Math.floor(Math.random()*100);
+    // send connection message
+    io.emit('connected',userName)
+
+    // message sent
     socket.on('message',(mess)=>{
         console.log(mess);
-        socket.emit('message',mess)
+        io.emit('message',{userName:userName,message:mess});
     })
+
+    // rename user
+
+    socket.on('rename',(newUserName)=>{
+        const oldUsername=userName;
+        userName=newUserName;
+        io.emit('rename',{oldUsername,userName});
+    })
+    
 })
