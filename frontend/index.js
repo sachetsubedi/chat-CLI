@@ -24,7 +24,11 @@ socket.on('connected',(userName)=>{
 })
 
 // on rename
-
+socket.on('rename',({oldUsername,userName})=>{
+    console.log(userName);
+    addChatItem(userName,`${oldUsername} changed their username to ${userName}`,"green");
+    inputBox.value='';
+})
 
 // input always in focuss
 const inputBox=document.getElementById('inputBox');
@@ -39,13 +43,14 @@ document.body.addEventListener('keydown',(e)=>{
         // rename
         if(message.startsWith('/rename')){
             const userName=message.slice('/rename '.length);
-            return socket.emit('rename',userName);
+            socket.emit('rename',userName);
         }
+        else{
         sendMessage(message);
         // clear input
         messageContainer.scrollTop=(messageContainer.scrollHeight);
         inputBox.value='';
-
+        }
     }
 })
 
