@@ -15,22 +15,32 @@ const io= new Server(httpServer,{
 })
 
 io.on('connection',(socket)=>{
-    let userName=Math.floor(Math.random()*100);
+    
+    const defaultNames = ['Anonymous Monkey', 'Captain Quirk', 'Luna Stardust', 'Sunny Sideup', 'Pixel Pajamas', 'Whispering Willow', 'Captain Noodle', 'Mystic Muffin', 'Jazzberry Jam', 'Dizzy Dinosaur', 'Cheesequake Cactus', 'Moonlight Marmalade', 'Sir Snugglekins', 'Chuckleberry Finn', 'Bubbles McFluff', 'Doodlebug Daffodil', 'Spaghetti Supernova', 'Giggles McGee', 'Scribble Scribble', 'Twinkle Toes'];
+    let userName;
+      
     // send connection message
-    io.emit('connected',userName)
-
+    socket.on('createConnection',(name)=>{
+        name!=null?userName=name:userName=defaultNames[Math.floor(Math.random()*20)];
+        socket.broadcast.emit('connected',userName);
+        socket.emit('connectionSuccess',userName);
+    })
     // message sent
     socket.on('message',(mess)=>{
         console.log(mess);
         io.emit('message',{userName:userName,message:mess});
     })
 
+    
     // rename user
-
     socket.on('rename',(newUserName)=>{
         const oldUsername=userName;
         userName=newUserName;
         io.emit('rename',{oldUsername,userName});
+    })
+
+    socket.on('disconnect',(reason)=>{
+        socket.broadcast.emit('disconnected',userName);
     })
     
 })
