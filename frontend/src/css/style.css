@@ -6,4 +6,22 @@
 }
 #messageContainer::-webkit-scrollbar{
     appearance: none;
+    display: none;
+}
+ul li{
+    font-weight: bold;
+}
+
+@media (min-width:768px) {
+    
+    .icons i:hover{
+        color: rgb(81, 255, 0);
+        transform: translateY(-5px);
+        scale: 1.5;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+    }
+    .icons, .hidden-icons{
+        transition:0.1 ease-in-out;
+    }
 }
