@@ -1,76 +1,109 @@
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <title>CHAT CLI</title>
+    <link rel="icon" href="./public/assets/png/icon.png" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"
+      integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./src/css/style.css" />
+  </head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-	<meta http-equiv="Pragma" content="no-cache">
-	<title>CHAT CLI</title>
-	<link rel="icon" href="./public/assets/png/icon.png">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"
-		integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q=="
-		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-		integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-		crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="./src/css/style.css" />
-</head>
+  <body>
+    <div
+      class="main flex flex-col bg-gray-700 h-screen text-white items-center"
+    >
+      <div
+        class="chatCLIContainer p-2 overflow-hidden w-full sm:w-[50%] mt-[5%] border-2 rounded-md pt-5 flex flex-col"
+      >
+        <div class="h-full">
+          <div class="header text-center font-semibold flex justify-between">
+            <div></div>
+            <div class="info flex gap-2">
+              <div
+                class="flex gap-2 items-center justify-center bg-green-500 rounded-sm px-3 py-1 shadow-2xl"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="6" r="4" fill="currentColor" />
+                  <path
+                    fill="currentColor"
+                    d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5"
+                  />
+                </svg>
+                <div id="bottomBarUserName" class="font-bold text-sm">User</div>
+              </div>
+              <div
+                class="room flex gap-2 items-center bg-purple-500 px-3 rounded-sm py-1 shadow-2xl"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M4 21q-.425 0-.712-.288T3 20t.288-.712T4 19h1V5q0-.825.588-1.412T7 3h10q.825 0 1.413.588T19 5v14h1q.425 0 .713.288T21 20t-.288.713T20 21zm10-8q.425 0 .713-.288T15 12t-.288-.712T14 11t-.712.288T13 12t.288.713T14 13"
+                  />
+                </svg>
+                <div id="bottomBarRoomId" class="text-sm font-bold">Room 1</div>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <ul
+              id="messageContainer"
+              class="flex flex-col overflow-y-scroll pt-2 h-96 gap-2"
+            >
+              <li class="font-semibold">
+                Welcome to chat CLI <span class="text-lime-400">v1.3.1</span>
+              </li>
+              <li>
+                <hr class="border-2 rounded-full mb-5" />
+                <div id="loadingAnimationContainer" class="text-yellow-400">
+                  Establishing connection
+                  <span id="loadingAnimation" class="text-yellow-500 pl-2">
+                    ___</span
+                  >
+                </div>
+              </li>
+            </ul>
+          </div>
 
-<body>
-	<div class="main flex flex-col bg-gray-700 h-[100vh] text-white  items-center">
-		<div class="chatCLIContainer h-full w-full md:h-[50%] md:w-[50%] md:mt-[5%] border-2 border-white rounded-md  pt-5 flex flex-col justify-between">
-			<div class="px-5">
-				<div class="header text-center font-semibold">Chat CLI</div>
-				<div>
-					<ul id="messageContainer" class="flex flex-col overflow-y-scroll max-h-80">
-						<li class="font-semibold">Welcome to chat CLI <span class="text-lime-400">v1.1.2</span></li>
-						<li>
-							<hr class="border-2 rounded-full mb-5">
-							<li id="loadingAnimationContainer" class="text-yellow-400">
-								Establishing connection  <span id="loadingAnimation" class="text-yellow-500 pl-2" > ___</span>
-							</li>
-						</li>
-
-					</ul>
-				</div>
-				<div id="userInput" class="flex mt-5">
-					<span class="bg-green-500 pl-2 pr-5 rounded-e-full font-bold mr-2" id="userNameDisplay">user
-						1</span>
-					<input type="text" class="font-semibold" id="inputBox" autofocus>
-				</div>
-			</div>
-
-
-			<!-- bottom bar -->
-			<div class=" bottom-bar py-1 px-2 bg-blue-500 flex justify-between items-center">
-				<div class="left flex gap-10">
-					<div class="flex gap-2  items-center">
-						<i class="fa-solid fa-user"></i>
-						<div id="bottomBarUserName">sachet</div>
-					</div>
-					<div class="room flex gap-2 items-center">
-						<i class="fa-solid fa-globe"></i>
-						<div id="bottomBarRoomId" >Room 1</div>
-					</div>
-				</div>
-				<div class="right">
-					<div class="icons p-1 bg-gray-700 rounded-full flex gap-3 " id="iconsContainer">
-						<a href="https://facebook.com/sachetsubedi001" class="hidden-icons hidden"><i class=" fa-brands fa-facebook"></i></a>
-						<a href="https://instagram.com/sachet_____" class="hidden-icons hidden"><i class=" fa-brands fa-instagram"></i></a>
-						<a href="https://github.com/scht001" class="hidden-icons hidden"><i class=" fa-brands fa-github"></i></a>
-						<a href="https://sachetsubedi001.com.np" class="hidden-icons hidden"><i class=" fa-solid fa-globe"></i></a>
-						<i class=" fa-solid fa-at" id="shownIcon"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-	</div>
-</body>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="src/scripts/history.js" ></script>
-<script src="index.js"></script>
-<script src="src/scripts/socialIconsController.js"></script>
-<script src="src/scripts/loadingController.js"></script>
-
+          <div id="userInput" class="flex mt-5 mb-2 ml-1 border p-2 rounded-md">
+            <span
+              class="bg-green-500 pl-2 pr-5 rounded-e-full font-bold mr-2"
+              id="userNameDisplay"
+            ></span>
+            <input type="text" class="font-semibold" id="inputBox" autofocus />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="src/scripts/history.js"></script>
+  <script src="index.js"></script>
+  <script src="src/scripts/loadingController.js"></script>
 </html>

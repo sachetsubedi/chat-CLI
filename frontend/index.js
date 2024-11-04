@@ -1,4 +1,7 @@
-const socket = io(`https://cli-backend-deploy.onrender.com`);
+// const socket = io(`https://cli-backend-deploy.onrender.com`);
+const socket = io(
+  "https://cli-chat-backend.whitetree-ac90122e.australiaeast.azurecontainerapps.io"
+);
 // const socket = io("http://localhost:3000");
 let userId;
 let roomId = "master";
@@ -14,6 +17,7 @@ const playMessage = () => {
   messageAudio.currentTime = 0;
   messageAudio.play();
 };
+
 const playSelfConnected = () => {
   selfConnectedAudio.currentTime = 0;
   selfConnectedAudio.play();
@@ -50,7 +54,7 @@ socket.on("connectionSuccess", (userName) => {
   userId = userName;
   document.getElementById("userNameDisplay").innerHTML = `${userName}`;
   const newLi = document.createElement("li");
-  newLi.innerHTML = `You are connected as <span class="text-lime-500">${userName} </span> <br> You are connected to room: <span class="text-lime-500">${roomId}</span> <br> <span class="text-yellow-400">/help</span> for help`;
+  newLi.innerHTML = `You are connected as <span class="text-lime-500">${userName} </span> <br> You are connected to room: <span class="text-purple-500">${roomId}</span> <br> <span class="text-yellow-400">/help</span> for help`;
   newLi.style.fontWeight = "bold";
   document.getElementById("messageContainer").append(newLi);
   messageContainer.scrollTop = messageContainer.scrollHeight;
@@ -125,7 +129,7 @@ socket.on("renamed", ({ oldUsername, userName }) => {
 // room created
 socket.on("roomCreated", (roomId) => {
   const newLi = document.createElement("li");
-  newLi.innerHTML = `You created a room: <span class="text-lime-400"> ${roomId} </span>`;
+  newLi.innerHTML = `You created a room: <span class="text-purple-400"> ${roomId} </span>`;
   messageContainer.append(newLi);
   messageContainer.scrollTop = messageContainer.scrollHeight;
 });
@@ -133,7 +137,7 @@ socket.on("roomCreated", (roomId) => {
 // room joined
 socket.on("roomJoined", (room) => {
   const newLi = document.createElement("li");
-  newLi.innerHTML = `You joined a room: <span class="text-lime-400"> ${room} </span>`;
+  newLi.innerHTML = `You joined a room: <span class="text-purple-400"> ${room} </span>`;
   messageContainer.append(newLi);
   roomId = room;
   refreshDetails();
@@ -211,9 +215,9 @@ const displayHelp = () => {
   const newLi = document.createElement("li");
   newLi.innerHTML = `
 	-------------------------------------------------------------- <br>
-	<span class="text-yellow-400">/rename </span> new_username ---------------- change you username <br>
-	<span class="text-yellow-400">/createroom </span>---------------- create a room <br>
-	<span class="text-yellow-400">/joinroom </span>room_id ---------------- join a room <br>  
+	<span class="text-yellow-400">/rename </span> new_username --> change your username <br>
+	<span class="text-yellow-400">/createroom </span> --> create a room <br>
+	<span class="text-yellow-400">/joinroom </span>room_id --> join a room <br>  
 	-------------------------------------------------------------- <br>
 	`;
   newLi.classList.add("font-semibold");

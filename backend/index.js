@@ -6,11 +6,16 @@ import generateRandomRoomName from "./src/scripts/randomRoomGenerator.js";
 const app = express();
 
 // Apply CORS middleware with specific options
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
-app.get("/", (req, res) => {
-  res.send("Response");
-});
+// app.get("/", (req, res) => {
+//   res.send("Response");
+// });
 
 const httpServer = app.listen(3000, () => {
   console.log("Server running at 3000");
@@ -18,9 +23,7 @@ const httpServer = app.listen(3000, () => {
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "*", // Update this to your front-end domain
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    origin: true, // Update this to your front-end domain
     credentials: true,
   },
 });
